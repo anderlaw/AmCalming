@@ -209,10 +209,6 @@
 </div>
 
 <style>
-    body {
-        margin: 0px;
-    }
-
     /* 盒子容器 */
     .layout {
         padding: 20px 24px;
@@ -304,10 +300,6 @@
         margin-left: 10px;
         font-size: 14px;
         flex: 1;
-    }
-
-    .play-button {
-        margin-right: 10px;
     }
 
     /* animation */
