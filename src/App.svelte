@@ -142,6 +142,7 @@
                 const newAudioEle = _music.audioEle = document.createElement('audio')
                 newAudioEle.controls = false
                 newAudioEle.src = _music.url
+                newAudioEle.loop = true
             }
             _music.audioEle.play()
         } else {
