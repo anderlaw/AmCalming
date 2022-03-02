@@ -13,7 +13,7 @@
         name: string //name具有唯一性
     }
     const baseUrl = 'https://audio-resource-1256270265.cos.ap-shanghai.myqcloud.com/audio'
-    const iconUrl = 'http://localhost:3000/images'
+    const iconUrl = 'https://audio-resource-1256270265.cos.ap-shanghai.myqcloud.com/images'
     const MusicList: Array<{
         label: string,
         name: string,
