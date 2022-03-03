@@ -1,4 +1,8 @@
 <script lang="ts">
+    import Button from "./components/Button.svelte";
+    import AudioCard from "./components/AudioCard.svelte";
+    import Player from "./components/Player.svelte";
+
     const handleEnter = (e) => {
         console.log(e)
     }
@@ -11,10 +15,11 @@
         audioEle: null | HTMLAudioElement,
         icon: string,
         name: string //name具有唯一性
+        playStatus?:boolean
     }
     const baseUrl = 'https://audio-resource-1256270265.cos.ap-shanghai.myqcloud.com/audio'
     const iconUrl = 'https://audio-resource-1256270265.cos.ap-shanghai.myqcloud.com/images'
-    const MusicList: Array<{
+    let MusicList: Array<{
         label: string,
         name: string,
         subItems: Array<MusicItem>
@@ -115,7 +120,6 @@
                 }
             ]
         }
-
     ]
     //UI状态
     let currentCategory = 'birds'
@@ -127,17 +131,18 @@
 
     //记录当前播放
     let currentPlayingMusicNames: Array<string> = []
-    $: playStatus = currentPlayingMusicNames.length > 0
+    let musicSelection:Array<MusicItem> = []
+    $: selectCount = musicSelection.length
+    $: playStatus = musicSelection.filter(item => item.playStatus).length > 0
     const playOrStopPlayOneMusic = (musicName: string) => {
-        let _index = -1
         let _music: MusicItem = null
         MusicList.find(_musicGroup => _music = _musicGroup.subItems.find(_musicItem => _musicItem.name === musicName))
 
-        const alreadyPlaying = (_index = currentPlayingMusicNames.indexOf(musicName)) > -1
-        if (!alreadyPlaying) {
-            //记录并播放
-            currentPlayingMusicNames = [...currentPlayingMusicNames, musicName]
 
+        const newStatus = _music.playStatus = !_music.playStatus
+        if (newStatus) {
+            //添加到选择并播放
+            musicSelection.push(_music)
             if (_music && !_music.audioEle) {
                 const newAudioEle = _music.audioEle = document.createElement('audio')
                 newAudioEle.controls = false
@@ -146,66 +151,61 @@
             }
             _music.audioEle.play()
         } else {
-            //删除记录并暂停
-            currentPlayingMusicNames.splice(_index, 1)
-            currentPlayingMusicNames = [...currentPlayingMusicNames]
+            //删除选择并暂停
+            musicSelection.splice(musicSelection.indexOf(_music),1)
             _music.audioEle.pause()
         }
+        MusicList = MusicList
+        musicSelection = musicSelection
     }
     //开始、暂停播放
+    const onPlayStatusChangeHandler = (toPlayOrPause: boolean) => {
+        if(musicSelection.length === 0){
+            alert('请选择你喜欢的音频卡片，点击开始播发')
+        }
+        musicSelection.forEach(music => {
+            music.playStatus = !music.playStatus
+            if(toPlayOrPause){
+                music.audioEle.play()
+            }else{
+                music.audioEle.pause()
+            }
+        })
+        musicSelection = musicSelection
+        MusicList = MusicList
+    }
+    //TODO:
     //列出正在播放的音乐，并可以调节某个音乐的音量
-    //将音乐资源托管到腾讯CDN、防止盗链
+    //防止盗链
     //程序Logo和小图标
     //捐赠二维码
 </script>
 <div class="layout">
     <main class="container">
-        <!--  header-->
-        <button class="donate-button">捐赠</button>
+        <Button style="margin-left: auto;display: block;" label="关于"/>
         <div class="divider" style="margin-top:12px"></div>
         <div class="category-container">
             {#each MusicList as musicCategory}
-                <button class="category-button {musicCategory.name === currentCategory ? 'active':''}"
-                        on:click={()=>currentCategory = musicCategory.name}>
-                    { musicCategory.label }
-                </button>
+                <Button style="margin-right: 10px;" onClick={()=>currentCategory = musicCategory.name}
+                        label="{musicCategory.label}" status="{musicCategory.name === currentCategory}"/>
             {/each}
         </div>
         <div class="music-option-container">
             {#each displayMusicOptions as music}
-                <div class="music-option {currentPlayingMusicNames.indexOf(music.name)>-1? 'active':''}"
-                     on:click={()=>playOrStopPlayOneMusic(music.name)}>
-                    <div class="icon-container">
-                        <img src="{music.icon}"/>
-                    </div>
-                    <span>{ music.label }</span>
-
-                </div>
+                <AudioCard
+                        status={music.playStatus}
+                        onClick={()=>playOrStopPlayOneMusic(music.name)}
+                        label="{music.label}"
+                        icon="{music.icon}"
+                />
             {/each}
         </div>
-        <div class="player-container">
-            {#if playStatus === true}
-                <svg on:click={()=>alert('stop')} width="34" height="34" viewBox="0 0 34 34" fill="none"
-                     xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="17" cy="17" r="16.5" stroke="white"/>
-                    <rect x="12" y="9" width="3" height="16" fill="white"/>
-                    <rect x="19" y="9" width="3" height="16" fill="white"/>
-                </svg>
-            {:else}
-                <svg on:click={()=>alert('play')} width="34" height="34" viewBox="0 0 34 34" fill="none"
-                     xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="17" cy="17" r="16.5" stroke="white"/>
-                    <path d="M28.057 17.1144L11.5076 26.5547L11.6068 7.50236L28.057 17.1144Z" fill="white"/>
-                </svg>
-            {/if}
-
-            <div class="intro">
-                当前：{currentPlayingMusicNames.length}个项目
-            </div>
-            <svg width="24" height="13" viewBox="0 0 24 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1 12L12 1L23 12" stroke="#C4C4C4"/>
-            </svg>
-        </div>
+        <Player
+                status={playStatus}
+                selectCount={selectCount}
+                onStop={()=>onPlayStatusChangeHandler(false)}
+                onPlay={()=>onPlayStatusChangeHandler(true)}
+        />
     </main>
 </div>
 
@@ -222,105 +222,19 @@
         height: 100%;
     }
 
-    /* 按钮 */
-    button {
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        padding: 0px 26px;
-        font-size: 12px;
-        cursor: pointer;
-        margin-right: 10px;
-        color: #FFF;
-        background-color: transparent;
-    }
-
-    button.active {
-        color: #081d24;
-        background-color: #FFF;
-        border-color: transparent;
-    }
-
-    .donate-button {
-        display: block;
-        margin-left: auto;
-        height: 24px;
-        border-radius: 12px;
-    }
-
     /* 分类 */
     .category-container {
         padding: 16px 0px;
     }
 
-    .category-button {
-        height: 30px;
-        border-radius: 15px;
-        font-size: 14px;
-    }
-
-    /* 音乐选区 */
-    .music-option-container {
-
-    }
-
-    .music-option-container > .music-option {
-        display: inline-block;
-        text-align: center;
-        margin: 6px;
-        color: #FFF;
-        font-size: 14px;
-    }
-
-    .icon-container > img {
-        width: 65px;
-    }
-
-    .music-option.active img {
-        /*background-color: blue;*/
-        transform-origin: 32px 0px;
-        animation: dance 5s linear infinite;
-    }
 
     .divider {
         height: 1px;
         background-color: rgba(101, 101, 101, .6);
     }
 
-    /* 播放控制区 */
-    .player-container {
-        display: flex;
-        align-items: center;
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        color: #FFF;
-        padding-top: 20px;
-        border-top: 1px solid rgba(101, 101, 101, .6);
-    }
 
-    .player-container > .intro {
-        margin-left: 10px;
-        font-size: 14px;
-        flex: 1;
-    }
 
-    /* animation */
-    @keyframes dance {
-        0% {
-            transform: rotate(0deg);
-        }
-        25% {
-            transform: rotate(20deg);
-        }
-        50% {
-            transform: rotate(0deg);
-        }
-        75% {
-            transform: rotate(-20deg);
-        }
-        100% {
-            transform: rotate(0deg);
-        }
-    }
 
     /*@-webkit-keyframes dance !* Safari 与 Chrome *!*/
     /*{*/
