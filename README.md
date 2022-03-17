@@ -1,4 +1,3 @@
-# SleepBetter
-A simple app contains some music to improve your sleep quality
+## A Music App that helps you to relax and improve sleep quality
 
-the access link is:https://anderlaw.github.io/SleepBetter/dist/
+一款帮助您放松并提高睡眠质量的音乐应用程序
