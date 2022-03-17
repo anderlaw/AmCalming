@@ -78,16 +78,12 @@ const Home: NextPage = () => {
             //新增播放
             const newAudioEle = document.createElement('audio');
             newAudioEle.controls = false
-            // newAudioEle.src = audioBaseUrl + name + '.ogg'
-            newAudioEle.src = 'https://audio-resource-1256270265.cos.ap-shanghai.myqcloud.com/audio/%E5%B0%8F%E9%B8%A1.mp3'
+            newAudioEle.src = audioBaseUrl + name + '.ogg'
             newAudioEle.loop = true;
-            newAudioEle.volume = defaultVolumeValue
-            newAudioEle.oncanplay = ()=>{
-                alert('可以播放了')
-                newAudioEle.play().catch(e => {
-                    console.log('无法播放',e)
-                });
-            }
+            // newAudioEle.volume = defaultVolumeValue
+            newAudioEle.play().catch(e => {
+                console.log('无法播放',e)
+            });
             newAudioEle.onerror = (e) => {
                 alert(JSON.stringify(e))
             }
