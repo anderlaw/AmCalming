@@ -1,3 +1,10 @@
-## A Music App that helps you to relax and improve sleep quality
+# AmCalming
+## About
+`AmCalming` is a Music-playing app can help reduce anxiety and improve sleep quality
+contains a lot of music to improve your sleep quality
 
-一款帮助您放松并提高睡眠质量的音乐应用程序
+`AmCalming`是一个帮助您放松并提高睡眠质量的音乐程序
+
+# listening
+
+feel free to listen on https://www.amcalming.com
