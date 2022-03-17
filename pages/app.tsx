@@ -85,7 +85,7 @@ const Home: NextPage = () => {
                 console.log('无法播放',e)
             });
             newAudioEle.onerror = (e) => {
-                alert(JSON.stringify(e))
+                console.log(e)
             }
             setPlayingMusicList(_prev => {
                 return _prev.map(_item => {
