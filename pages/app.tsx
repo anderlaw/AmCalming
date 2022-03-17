@@ -142,6 +142,9 @@ const Home: NextPage = () => {
             {
                 showPlayInfoDialog && <div
                     style={{position: 'fixed',color:'#fff', left: 0, right: 0, padding:'20px',bottom: 0, backgroundColor: '#151616c7', height: '70vh'}}>
+                    <audio controls>
+                        <source src='https://audio-resource-1256270265.cos.ap-shanghai.myqcloud.com/audio/%E5%B0%8F%E9%B8%A1.mp3'/>
+                    </audio>
                     {
                         playingMusicList.map(item => {
                             return <div key={item.audioName} style={{display: 'flex',marginBottom:'10px', alignItems: 'center'}}>
