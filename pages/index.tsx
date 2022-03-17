@@ -24,14 +24,14 @@ const Home: NextPage = () => {
                     <button className={`${styles.button} ${styles.button_banner}`}>立刻开始（begin now）</button>
                 </div>
                 <div className={styles.bannerRight}>
-                    <img src={'/girl-music.png'}/>
+                    <img src={'girl-music.png'}/>
                 </div>
             </div>
             <FeatureTitle/>
             <div className={styles.cardContainer}>
                 <div className={`${styles.leftRightLayout} ${styles.card}`}>
                     <div className={styles.cardImage}>
-                        <img src="/player.jpeg" alt=""/>
+                        <img src="player.jpeg" alt=""/>
                     </div>
                     <div className={styles.cardWord}>
                         <p>巧妙的<span className={styles.cardWord_strong}>混合式播放</span></p>
@@ -45,13 +45,13 @@ const Home: NextPage = () => {
                         <p>放松、助睡眠二合一，让您更无忧</p>
                     </div>
                     <div className={styles.cardImage}>
-                        <img src="/player.jpeg" alt=""/>
+                        <img src="player.jpeg" alt=""/>
                     </div>
                 </div>
                 <Divider/>
                 <div className={`${styles.leftRightLayout} ${styles.card}`}>
                     <div className={styles.cardImage}>
-                        <img src="/player.jpeg" alt=""/>
+                        <img src="player.jpeg" alt=""/>
                     </div>
                     <div className={styles.cardWord}>
                         <p>用心的<span className={styles.cardWord_strong}>黑白</span>主题设计</p>
@@ -66,7 +66,7 @@ const Home: NextPage = () => {
                         <button style={{marginTop:'14px'}} className={styles.button}>马上开始</button>
                     </div>
                     <div className={styles.cardImage}>
-                        <img src="/player.jpeg" alt=""/>
+                        <img src="player.jpeg" alt=""/>
                     </div>
                 </div>
             </div>
