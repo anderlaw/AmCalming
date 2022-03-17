@@ -1,12 +1,17 @@
-html{
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+html {
+    padding: 0;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
-body,p{
-  margin: 0;
+
+body, p {
+    margin: 0;
 }
+
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
+}
+.app-bg{
+    /*background-color: #FEFFFE;*/
 }

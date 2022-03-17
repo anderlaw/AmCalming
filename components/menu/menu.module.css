@@ -1,0 +1,21 @@
+.leftMenuContainer{
+    width: 80px;
+    height: calc(100vh - 130px);
+    border-right: 1px solid #eff0f0;
+    box-shadow: 2px 0px 4px -2px rgb(64 60 67 / 16%);
+    top:60px;
+    left: 0;
+    position: fixed;
+}
+.leftMenuContainer > .menuItem{
+    padding: 8px 0px;
+    text-align: center;
+}
+.leftMenuContainer > .menuItem:hover{
+    background-color: #ccc;
+    cursor: pointer;
+}
+.leftMenuContainer > .text{
+    position: absolute;
+    bottom: 0;
+}

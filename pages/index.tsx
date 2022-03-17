@@ -1,7 +1,6 @@
 import type {NextPage} from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
 import styles from '../styles/website.module.css'
+import menuStyles from "*.module.css";
 
 const Divider = () => {
     return <div style={{display: 'flex', justifyContent: 'center', margin: '40px 0'}}>

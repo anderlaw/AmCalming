@@ -1,0 +1,19 @@
+/* 播放控制区 */
+.playerContainer {
+    width: 100vw;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    color: #FFF;
+    padding:0 20px;
+    user-select: none;
+    background-color: #288688;
+}
+.playerContainer > .intro {
+    margin: 0 10px;
+    font-size: 16px;
+    flex: 1;
+}
