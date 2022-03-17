@@ -3,10 +3,16 @@ import {Header, TabType} from '../components/header';
 import {LeftMenu} from "../components/menu";
 import {MainContainer} from "../components/main";
 import {Player} from "../components/player";
-import {useState} from "react";
-import styles from "../components/player/index.module.css";
-
+import {useMemo, useState} from "react";
 import playerStyles from "../components/player/index.module.css";
+
+export type PlayingListType = Array<{
+    audioEle: HTMLAudioElement,
+    audioPlaying: boolean,
+    audioName: string,
+    volume:number
+}>
+const defaultVolumeValue = 0.6
 const audioBaseUrl = 'https://full-audio-resource-1256270265.cos.ap-shanghai.myqcloud.com/'
 const Home: NextPage = () => {
     const categories = {
@@ -27,28 +33,97 @@ const Home: NextPage = () => {
 
     const [curTab, setCurTab] = useState<TabType>('Library')
     const [curCategory, setCurCategory] = useState<string>('')
-    const [playStatus, setPlayStatus] = useState<boolean>(false)
+    const [showPlayInfoDialog, setShowPlayInfoDialog] = useState<boolean>(false)
+    const [playingMusicList, setPlayingMusicList] = useState<PlayingListType>([])
+    const playStatus = useMemo(() => playingMusicList.filter(item => item.audioPlaying).length > 0, [playingMusicList])
+    const switchPlayingStatus = (status: boolean) => {
+        setPlayingMusicList(_prev => {
+            return _prev.map(_item => {
+                const item = Object.assign({}, _item)
+                item.audioPlaying = status;
+                if (status) {
+                    item.audioEle.play()
+                } else {
+                    item.audioEle.pause()
+                }
+                return item;
+            })
+        })
+    }
+    const handleMusicItemClicked = (name: string) => {
+        const pickFromSelectList = playingMusicList.find(item => item.audioName === name)
+        if (pickFromSelectList) {
+            if (playStatus) {
+                //播放中:暂停并清掉
+                pickFromSelectList.audioEle.pause()
+                pickFromSelectList.audioPlaying = false
+                setPlayingMusicList(_prev => {
+                    return _prev.filter((_, index) => index !== _prev.indexOf(pickFromSelectList))
+                })
+            } else {
+                //暂停了,需要恢复播放
+                setPlayingMusicList(_prev => {
+                    return _prev.map(_item => {
+                        const item = Object.assign({}, _item)
+                        if (!item.audioPlaying) {
+                            item.audioPlaying = true;
+                            item.audioEle.volume = item.volume
+                            item.audioEle.play()
+                        }
+                        return item
+                    })
+                })
+            }
+        } else {
+            //新增播放
+            const newAudioEle = document.createElement('audio');
+            newAudioEle.controls = false
+            newAudioEle.src = audioBaseUrl + name + '.ogg'
+            newAudioEle.loop = true
+            newAudioEle.play();
+            newAudioEle.volume = defaultVolumeValue
+            setPlayingMusicList(_prev => {
+                return _prev.map(_item => {
+                    const item = Object.assign({}, _item)
+                    if (!item.audioPlaying) {
+                        item.audioPlaying = true;
+                        item.audioEle.play()
+                    }
+                    return item
+                }).concat([{
+                    audioEle: newAudioEle,
+                    audioPlaying: true,
+                    audioName: name,
+                    volume:newAudioEle.volume
+                }])
+            })
+        }
+    }
     //inner components
     const Player = () => {
         return <div className={playerStyles.playerContainer}>
             <div className='play-button'>
                 {
-                    playStatus ? <svg width="34" height="34" viewBox="0 0 34 34" fill="none"
-                                      xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="17" cy="17" r="16.5" stroke="white"/>
-                        <rect x="12" y="9" width="3" height="16" fill="white"/>
-                        <rect x="19" y="9" width="3" height="16" fill="white"/>
-                    </svg> : <svg width="34" height="34" viewBox="0 0 34 34" fill="none"
-                                  xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="17" cy="17" r="16.5" stroke="white"/>
-                        <path d="M28.057 17.1144L11.5076 26.5547L11.6068 7.50236L28.057 17.1144Z" fill="white"/>
-                    </svg>
+                    playStatus ?
+                        <svg onClick={() => switchPlayingStatus(false)} width="34" height="34" viewBox="0 0 34 34"
+                             fill="none"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="17" cy="17" r="16.5" stroke="white"/>
+                            <rect x="12" y="9" width="3" height="16" fill="white"/>
+                            <rect x="19" y="9" width="3" height="16" fill="white"/>
+                        </svg> :
+                        <svg onClick={() => switchPlayingStatus(true)} width="34" height="34" viewBox="0 0 34 34"
+                             fill="none"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="17" cy="17" r="16.5" stroke="white"/>
+                            <path d="M28.057 17.1144L11.5076 26.5547L11.6068 7.50236L28.057 17.1144Z" fill="white"/>
+                        </svg>
                 }
             </div>
             <div className={playerStyles.intro}>
-                当前:4个项目
+                当前:{playingMusicList.length}个项目
             </div>
-            <svg width="24" height="13" viewBox="0 0 24 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg onClick={() => setShowPlayInfoDialog(true)} width="24" height="13" viewBox="0 0 24 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M1 12L12 1L23 12" stroke="#C4C4C4"/>
             </svg>
         </div>
@@ -58,13 +133,46 @@ const Home: NextPage = () => {
             <Header curTab={curTab} onTabChange={newTab => setCurTab(newTab)}/>
             <LeftMenu categoryNames={Object.keys(categories)} onCategoryClick={(name) => setCurCategory(name)}/>
             <Player/>
-            <MainContainer onMusicClick={(name) => {
-                const newAudioEle = document.createElement('audio')
-                newAudioEle.controls = false
-                newAudioEle.src = audioBaseUrl + name + '.ogg'
-                newAudioEle.loop = true
-                newAudioEle.play();
-            }} musicNameList={categories[curCategory] || []}/>
+            {
+                showPlayInfoDialog && <div
+                    style={{position: 'fixed',color:'#fff', left: 0, right: 0, padding:'20px',bottom: 0, backgroundColor: '#151616c7', height: '70vh'}}>
+                    {
+                        playingMusicList.map(item => {
+                            return <div key={item.audioName} style={{display: 'flex',marginBottom:'10px', alignItems: 'center'}}>
+                                <div style={{width:'120px'}}> <span>{item.audioName}</span></div>
+                                <input defaultValue={item.volume*10} min={0} max={10} onChange={e=>{
+                                    setPlayingMusicList(_prev => {
+                                        return _prev.map(_innerItem => {
+                                            const innerItem = Object.assign({},_innerItem)
+                                            if(_innerItem === item){
+                                                innerItem.volume = (e.target as any).value/10;
+                                                innerItem.audioEle.volume = innerItem.volume
+                                            }
+                                            return innerItem;
+                                        })
+                                    })
+                                }} type={'range'}/>
+                                <div onClick={()=>{
+                                    setPlayingMusicList(_prev => {
+                                        return _prev.filter(_innerItem => {
+                                            const innerItem = Object.assign({},_innerItem)
+                                            if(_innerItem === item){
+                                                innerItem.audioEle.pause()
+                                                return null
+                                            }
+                                            return innerItem
+                                        })
+                                    })
+                                }} style={{marginLeft:'10px',padding:'6px'}}>X</div>
+                            </div>
+                        })
+                    }
+                    <span onClick={()=>setShowPlayInfoDialog(false)} style={{color:'#FFF',position:'absolute',right:'10px',top:'10px'}}>X</span>
+                </div>
+            }
+
+            <MainContainer curPlaying={playingMusicList} onMusicClick={handleMusicItemClicked}
+                           musicNameList={categories[curCategory] || []}/>
         </div>
     )
 }
