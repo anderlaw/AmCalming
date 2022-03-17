@@ -83,10 +83,13 @@ const Home: NextPage = () => {
             newAudioEle.loop = true;
             newAudioEle.volume = defaultVolumeValue
             newAudioEle.oncanplay = ()=>{
-                console.log('可以播放了')
+                alert('可以播放了')
                 newAudioEle.play().catch(e => {
                     console.log('无法播放',e)
                 });
+            }
+            newAudioEle.onerror = (e) => {
+                alert(JSON.stringify(e))
             }
             setPlayingMusicList(_prev => {
                 return _prev.map(_item => {
