@@ -79,9 +79,13 @@ const Home: NextPage = () => {
             const newAudioEle = document.createElement('audio');
             newAudioEle.controls = false
             newAudioEle.src = audioBaseUrl + name + '.ogg'
-            newAudioEle.loop = true
-            newAudioEle.play();
+            newAudioEle.loop = true;
             newAudioEle.volume = defaultVolumeValue
+            newAudioEle.oncanplay = ()=>{
+                newAudioEle.play().catch(e => {
+                    console.log('无法播放',e)
+                });
+            }
             setPlayingMusicList(_prev => {
                 return _prev.map(_item => {
                     const item = Object.assign({}, _item)
