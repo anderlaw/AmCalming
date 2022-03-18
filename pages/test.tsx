@@ -69,6 +69,11 @@ const Home: NextPage = () => {
             <audio controls>
                 <source type="audio/wav" src="Playground.ogg"/>
             </audio>
+            <p>转换后的mp3</p>
+            <audio controls>
+                <source type="audio/mpeg" src="AsmrEarCleaning.mp3"/>
+            </audio>
+
         </div>
     )
 }
