@@ -73,6 +73,10 @@ const Home: NextPage = () => {
             <audio controls>
                 <source type="audio/mpeg" src="AsmrEarCleaning.mp3"/>
             </audio>
+            <p>转换后的mp32</p>
+            <audio controls>
+                <source type="audio/mpeg" src="Abstract (1).mp3"/>
+            </audio>
 
         </div>
     )
