@@ -151,10 +151,6 @@ const Home: NextPage = () => {
                         backgroundColor: '#151616c7',
                         height: '70vh'
                     }}>
-                    <audio controls>
-                        <source
-                            src='Birds.mp3'/>
-                    </audio>
                     {
                         playingMusicList.map(item => {
                             return <div key={item.audioName}
