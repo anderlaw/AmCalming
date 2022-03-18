@@ -57,8 +57,17 @@ const Home: NextPage = () => {
                 }
                 xhr.send()
             }}>点击请求音频文件通过AudioContext播放</button>
+            <p>wav</p>
             <audio controls>
                 <source type="audio/wav" src="Abstract.wav"/>
+            </audio>
+            <p>acc</p>
+            <audio controls>
+                <source type="audio/wav" src="Abstract.acc"/>
+            </audio>
+            <p>转换后的ogg</p>
+            <audio controls>
+                <source type="audio/wav" src="Playground.ogg"/>
             </audio>
         </div>
     )
