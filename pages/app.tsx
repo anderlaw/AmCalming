@@ -10,7 +10,7 @@ export type PlayingListType = Array<{
     audioEle: HTMLAudioElement,
     audioPlaying: boolean,
     audioName: string,
-    volume:number
+    volume: number
 }>
 const defaultVolumeValue = 0.6
 const audioBaseUrl = 'https://full-audio-resource-1256270265.cos.ap-shanghai.myqcloud.com/'
@@ -82,7 +82,7 @@ const Home: NextPage = () => {
             newAudioEle.loop = true;
             // newAudioEle.volume = defaultVolumeValue
             newAudioEle.play().catch(e => {
-                console.log('无法播放',e)
+                console.log('无法播放', e)
             });
             newAudioEle.onerror = (e) => {
                 console.log(e)
@@ -99,7 +99,7 @@ const Home: NextPage = () => {
                     audioEle: newAudioEle,
                     audioPlaying: true,
                     audioName: name,
-                    volume:newAudioEle.volume
+                    volume: newAudioEle.volume
                 }])
             })
         }
@@ -128,7 +128,8 @@ const Home: NextPage = () => {
             <div className={playerStyles.intro}>
                 当前:{playingMusicList.length}个项目
             </div>
-            <svg onClick={() => setShowPlayInfoDialog(true)} width="24" height="13" viewBox="0 0 24 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg onClick={() => setShowPlayInfoDialog(true)} width="24" height="13" viewBox="0 0 24 13" fill="none"
+                 xmlns="http://www.w3.org/2000/svg">
                 <path d="M1 12L12 1L23 12" stroke="#C4C4C4"/>
             </svg>
         </div>
@@ -140,42 +141,55 @@ const Home: NextPage = () => {
             <Player/>
             {
                 showPlayInfoDialog && <div
-                    style={{position: 'fixed',color:'#fff', left: 0, right: 0, padding:'20px',bottom: 0, backgroundColor: '#151616c7', height: '70vh'}}>
+                    style={{
+                        position: 'fixed',
+                        color: '#fff',
+                        left: 0,
+                        right: 0,
+                        padding: '20px',
+                        bottom: 0,
+                        backgroundColor: '#151616c7',
+                        height: '70vh'
+                    }}>
                     <audio controls>
-                        <source src='https://audio-resource-1256270265.cos.ap-shanghai.myqcloud.com/audio/%E5%B0%8F%E9%B8%A1.mp3'/>
+                        <source
+                            src='https://audio-resource-1256270265.cos.ap-shanghai.myqcloud.com/audio/%E5%B0%8F%E9%B8%A1.mp3'/>
                     </audio>
                     {
                         playingMusicList.map(item => {
-                            return <div key={item.audioName} style={{display: 'flex',marginBottom:'10px', alignItems: 'center'}}>
-                                <div style={{width:'120px'}}> <span>{item.audioName}</span></div>
-                                <input defaultValue={item.volume*10} min={0} max={10} onChange={e=>{
+                            return <div key={item.audioName}
+                                        style={{display: 'flex', marginBottom: '10px', alignItems: 'center'}}>
+                                <div style={{width: '120px'}}><span>{item.audioName}</span></div>
+                                <input defaultValue={item.volume * 10} min={0} max={10} onChange={e => {
                                     setPlayingMusicList(_prev => {
                                         return _prev.map(_innerItem => {
-                                            const innerItem = Object.assign({},_innerItem)
-                                            if(_innerItem === item){
-                                                innerItem.volume = (e.target as any).value/10;
+                                            const innerItem = Object.assign({}, _innerItem)
+                                            if (_innerItem === item) {
+                                                innerItem.volume = (e.target as any).value / 10;
                                                 innerItem.audioEle.volume = innerItem.volume
                                             }
                                             return innerItem;
                                         })
                                     })
                                 }} type={'range'}/>
-                                <div onClick={()=>{
+                                <div onClick={() => {
                                     setPlayingMusicList(_prev => {
                                         return _prev.filter(_innerItem => {
-                                            const innerItem = Object.assign({},_innerItem)
-                                            if(_innerItem === item){
+                                            const innerItem = Object.assign({}, _innerItem)
+                                            if (_innerItem === item) {
                                                 innerItem.audioEle.pause()
                                                 return null
                                             }
                                             return innerItem
                                         })
                                     })
-                                }} style={{marginLeft:'10px',padding:'6px'}}>X</div>
+                                }} style={{marginLeft: '10px', padding: '6px'}}>X
+                                </div>
                             </div>
                         })
                     }
-                    <span onClick={()=>setShowPlayInfoDialog(false)} style={{color:'#FFF',position:'absolute',right:'10px',top:'10px'}}>X</span>
+                    <span onClick={() => setShowPlayInfoDialog(false)}
+                          style={{color: '#FFF', position: 'absolute', right: '10px', top: '10px'}}>X</span>
                 </div>
             }
 
