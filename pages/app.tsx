@@ -80,13 +80,8 @@ const Home: NextPage = () => {
             newAudioEle.controls = false
             newAudioEle.src = audioBaseUrl + name + '.mp3'
             newAudioEle.loop = true;
-            // newAudioEle.volume = defaultVolumeValue
-            newAudioEle.play().catch(e => {
-                console.log('无法播放', e)
-            });
-            newAudioEle.onerror = (e) => {
-                console.log(e)
-            }
+            newAudioEle.volume = defaultVolumeValue
+            newAudioEle.play()
             setPlayingMusicList(_prev => {
                 return _prev.map(_item => {
                     const item = Object.assign({}, _item)
