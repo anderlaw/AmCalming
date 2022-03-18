@@ -78,7 +78,7 @@ const Home: NextPage = () => {
             //新增播放
             const newAudioEle = document.createElement('audio');
             newAudioEle.controls = false
-            newAudioEle.src = audioBaseUrl + name + '.ogg'
+            newAudioEle.src = audioBaseUrl + name + '.mp3'
             newAudioEle.loop = true;
             // newAudioEle.volume = defaultVolumeValue
             newAudioEle.play().catch(e => {
