@@ -29,9 +29,8 @@ const Home: NextPage = () => {
                 // newAudioEle.volume = defaultVolumeValue
             }}>点击播放旧音频</button>
             <button onClick={()=>{
-                const newAudioEle = document.createElement('audio');
+                const newAudioEle = new Audio(base64audio);
                 newAudioEle.controls = false
-                newAudioEle.src = base64audio
                 newAudioEle.loop = true;
                 newAudioEle.play()
                 // newAudioEle.volume = defaultVolumeValue
