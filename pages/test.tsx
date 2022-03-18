@@ -35,6 +35,28 @@ const Home: NextPage = () => {
                 newAudioEle.play()
                 // newAudioEle.volume = defaultVolumeValue
             }}>点击播放新音频</button>
+
+            <button onClick={()=>{
+                const xhr = new XMLHttpRequest()
+                xhr.responseType = 'arraybuffer'
+                xhr.open('get','https://full-audio-resource-1256270265.cos.ap-shanghai.myqcloud.com/Birds.mp3')
+                xhr.onload = ()=>{
+                    const ctx = new window.AudioContext()
+                    ctx.decodeAudioData(xhr.response,(buf)=>{
+                        const sNode = ctx.createBufferSource();
+                        // console.log(buf);
+                        sNode.buffer = buf;
+                        //连接到destination节点进行播放
+                        sNode.connect(ctx.destination);
+                        sNode.start(0);
+                        sNode.loop = true;
+                    },err=>{
+                        console.log(err)
+                    })
+                    console.log(xhr)
+                }
+                xhr.send()
+            }}>点击请求音频文件通过AudioContext播放</button>
         </div>
     )
 }
