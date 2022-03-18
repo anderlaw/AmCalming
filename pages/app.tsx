@@ -153,7 +153,7 @@ const Home: NextPage = () => {
                     }}>
                     <audio controls>
                         <source
-                            src='https://audio-resource-1256270265.cos.ap-shanghai.myqcloud.com/audio/%E5%B0%8F%E9%B8%A1.mp3'/>
+                            src='Birds.mp3'/>
                     </audio>
                     {
                         playingMusicList.map(item => {
