@@ -39,9 +39,9 @@ const Home: NextPage = () => {
             <button onClick={()=>{
                 const xhr = new XMLHttpRequest()
                 xhr.responseType = 'arraybuffer'
-                xhr.open('get','https://full-audio-resource-1256270265.cos.ap-shanghai.myqcloud.com/Birds.mp3')
+                xhr.open('get','Birds.mp3')
                 xhr.onload = ()=>{
-                    const ctx = new window.AudioContext()
+                    const ctx = new (window.AudioContext)()
                     ctx.decodeAudioData(xhr.response,(buf)=>{
                         const sNode = ctx.createBufferSource();
                         // console.log(buf);
@@ -57,6 +57,9 @@ const Home: NextPage = () => {
                 }
                 xhr.send()
             }}>点击请求音频文件通过AudioContext播放</button>
+            <audio controls>
+                <source type="audio/ogg" src={base64audio}/>
+            </audio>
         </div>
     )
 }
