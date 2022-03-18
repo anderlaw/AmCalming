@@ -58,7 +58,7 @@ const Home: NextPage = () => {
                 xhr.send()
             }}>点击请求音频文件通过AudioContext播放</button>
             <audio controls>
-                <source type="audio/ogg" src={base64audio}/>
+                <source type="audio/wav" src="Abstract.wav"/>
             </audio>
         </div>
     )
