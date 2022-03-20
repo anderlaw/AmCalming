@@ -8,6 +8,8 @@ import playerStyles from "../components/player/index.module.css";
 
 export type PlayingListType = Array<{
     audioEle: HTMLAudioElement,
+    audioContext?:AudioContext,
+    gainNode:GainNode,
     audioPlaying: boolean,
     audioName: string,
     volume: number
@@ -76,9 +78,20 @@ const Home: NextPage = () => {
             }
         } else {
             console.log('新增播放--')
-            //新增播放
+            //新增播
+            // gainNode.gain.value = Math.floor(innerItem.volume/100 * Math.random()*2);
+            const newAudioEle = new Audio(audioBaseUrl + name + '.mp3')
+            newAudioEle.crossOrigin = 'anonymous'
+            newAudioEle.controls = false
+            newAudioEle.loop = true
+
+            const newAudioCtx = new AudioContext();
+            const gainNode = newAudioCtx.createGain();
+
+            newAudioCtx.createMediaElementSource(newAudioEle).connect(gainNode).connect(newAudioCtx.destination)
             const newPlayItem = {
-                audioEle: document.createElement('audio'),
+                audioEle: newAudioEle,
+                gainNode:gainNode,
                 audioPlaying: true,
                 audioName: name,
                 volume: defaultVolumeValue
@@ -87,21 +100,14 @@ const Home: NextPage = () => {
             setLoadingList(_prev => {
                 return _prev.concat(name)
             })
-            newPlayItem.audioEle.controls = false
-            newPlayItem.audioEle.loop = true;
-            newPlayItem.audioEle.volume = newPlayItem.volume / 100
-
             newPlayItem.audioEle.oncanplay = () => {
                 //删除`加载中`记录
                 setLoadingList(_prev => {
                     return _prev.filter(_name => _name !== name)
                 })
             }
-            if(name === "XIXI"){
-                newPlayItem.audioEle.src = 'https://audio-resource-1256270265.cos.ap-shanghai.myqcloud.com/audio/%E5%B0%8F%E9%B8%A1.mp3'
-            }else{
-                newPlayItem.audioEle.src = audioBaseUrl + name + '.mp3'
-            }
+
+
             //caution: play() must invoke here,cant put it on other place, or it can't trigger playing in mobile devices
             newPlayItem.audioEle.play()
             setPlayingMusicList(_prev => {
@@ -191,19 +197,12 @@ const Home: NextPage = () => {
                                                setPlayingMusicList(_prev => {
                                                    return _prev.map(_innerItem => {
                                                        //改变音量
-                                                       const audioCtx = new AudioContext();
-                                                       const track = audioCtx.createMediaElementSource(_innerItem.audioEle);
-                                                       track.connect(audioCtx.destination);
-
-                                                       const gainNode = audioCtx.createGain();
-                                                       track.connect(gainNode).connect(audioCtx.destination);
-
 
                                                        const innerItem = Object.assign({}, _innerItem)
                                                        if (_innerItem === item) {
                                                            innerItem.volume = (e.target as any).value;
-                                                           innerItem.audioEle.volume = innerItem.volume/100
-                                                           gainNode.gain.value = Math.floor(innerItem.volume/100 * Math.random()*2);
+                                                           // innerItem.audioEle.volume = innerItem.volume/100
+                                                           innerItem.gainNode.gain.value += 0.5
                                                        }
                                                        return innerItem;
                                                    })
