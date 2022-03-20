@@ -93,7 +93,7 @@ const Home: NextPage = () => {
 
             newPlayItem.audioEle.oncanplay = () => {
                 console.log('can play')
-                // newPlayItem.audioEle.play()
+                newPlayItem.audioEle.play()
                 //删除`加载中`记录
                 setLoadingList(_prev => {
                     return _prev.filter(_name => _name !== name)
@@ -106,7 +106,7 @@ const Home: NextPage = () => {
                 console.log(e)
             }
 
-            newPlayItem.audioEle.play()
+            // newPlayItem.audioEle.play()
             setPlayingMusicList(_prev => {
                 return _prev.map(_item => {
                     const item = Object.assign({}, _item)
