@@ -14,7 +14,7 @@
     cursor: pointer;
     padding: 0 6px;
 }
-.musicItemContainer:hover,.musicItemContainer.active{
+.musicItemContainer.active{
     color:red;
     /*background-color: #CCC;*/
 }
