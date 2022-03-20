@@ -101,7 +101,7 @@ const Home: NextPage = () => {
     }
     //inner components
     const Player = () => {
-        return <div onClick={()=>setShowPlayInfoDialog(true)} className={playerStyles.playerContainer}>
+        return <div onClick={() => setShowPlayInfoDialog(true)} className={playerStyles.playerContainer}>
             <div className={playerStyles.playButton}>
                 {
                     playStatus ?
@@ -142,55 +142,55 @@ const Home: NextPage = () => {
             <Header curTab={curTab} onTabChange={newTab => setCurTab(newTab)}/>
             <LeftMenu categoryNames={Object.keys(categories)} onCategoryClick={(name) => setCurCategory(name)}/>
             <Player/>
-            {
-                showPlayInfoDialog && <div
-                    style={{
-                        position: 'fixed',
-                        color: '#fff',
-                        left: 0,
-                        right: 0,
-                        padding: '20px',
-                        bottom: 0,
-                        backgroundColor: '#151616c7',
-                        height: '70vh'
-                    }}>
-                    {
-                        playingMusicList.map(item => {
-                            return <div key={item.audioName}
-                                        style={{display: 'flex', marginBottom: '10px', alignItems: 'center'}}>
-                                <div style={{width: '120px'}}><span>{item.audioName}</span></div>
-                                <input defaultValue={item.volume * 10} min={0} max={10} onChange={e => {
-                                    setPlayingMusicList(_prev => {
-                                        return _prev.map(_innerItem => {
-                                            const innerItem = Object.assign({}, _innerItem)
-                                            if (_innerItem === item) {
-                                                innerItem.volume = (e.target as any).value / 10;
-                                                innerItem.audioEle.volume = innerItem.volume
-                                            }
-                                            return innerItem;
-                                        })
+            <div
+                style={{
+                    position: 'fixed',
+                    color: '#fff',
+                    transition: 'top .3s ease-in-out',
+                    top: showPlayInfoDialog ? '10px' : '100vh',
+                    left: 0,
+                    right: 0,
+                    padding: '20px',
+                    bottom: 0,
+                    backgroundColor: 'rgba(21,22,22,0.69)',
+                    backdropFilter: 'blur(5px)',
+                }}>
+                {
+                    playingMusicList.map(item => {
+                        return <div key={item.audioName}
+                                    style={{display: 'flex', marginBottom: '10px', alignItems: 'center'}}>
+                            <div style={{width: '120px'}}><span>{item.audioName}</span></div>
+                            <input defaultValue={item.volume * 10} min={0} max={10} onChange={e => {
+                                setPlayingMusicList(_prev => {
+                                    return _prev.map(_innerItem => {
+                                        const innerItem = Object.assign({}, _innerItem)
+                                        if (_innerItem === item) {
+                                            innerItem.volume = (e.target as any).value / 10;
+                                            innerItem.audioEle.volume = innerItem.volume
+                                        }
+                                        return innerItem;
                                     })
-                                }} type={'range'}/>
-                                <div onClick={() => {
-                                    setPlayingMusicList(_prev => {
-                                        return _prev.filter(_innerItem => {
-                                            const innerItem = Object.assign({}, _innerItem)
-                                            if (_innerItem === item) {
-                                                innerItem.audioEle.pause()
-                                                return null
-                                            }
-                                            return innerItem
-                                        })
+                                })
+                            }} type={'range'}/>
+                            <div onClick={() => {
+                                setPlayingMusicList(_prev => {
+                                    return _prev.filter(_innerItem => {
+                                        const innerItem = Object.assign({}, _innerItem)
+                                        if (_innerItem === item) {
+                                            innerItem.audioEle.pause()
+                                            return null
+                                        }
+                                        return innerItem
                                     })
-                                }} style={{marginLeft: '10px', padding: '6px'}}>X
-                                </div>
+                                })
+                            }} style={{marginLeft: '10px', padding: '6px'}}>X
                             </div>
-                        })
-                    }
-                    <span onClick={() => setShowPlayInfoDialog(false)}
-                          style={{color: '#FFF', position: 'absolute', right: '10px', top: '10px'}}>X</span>
-                </div>
-            }
+                        </div>
+                    })
+                }
+                <span onClick={() => setShowPlayInfoDialog(false)}
+                      style={{color: '#FFF', position: 'absolute', right: '10px', top: '10px'}}>X</span>
+            </div>
 
             <MainContainer curPlaying={playingMusicList} onMusicClick={handleMusicItemClicked}
                            musicNameList={categories[curCategory] || []}/>
