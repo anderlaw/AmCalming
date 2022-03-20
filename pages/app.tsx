@@ -97,6 +97,10 @@ const Home: NextPage = () => {
                     return _prev.filter(_name => _name !== name)
                 })
             }
+            newPlayItem.audioEle.onerror = (e) => {
+                console.log('load err')
+                console.log(e)
+            }
             setPlayingMusicList(_prev => {
                 return _prev.map(_item => {
                     const item = Object.assign({}, _item)
