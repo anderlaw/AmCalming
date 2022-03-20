@@ -15,5 +15,6 @@
     padding: 0 6px;
 }
 .musicItemContainer:hover,.musicItemContainer.active{
-    background-color: #CCC;
+    color:red;
+    /*background-color: #CCC;*/
 }
