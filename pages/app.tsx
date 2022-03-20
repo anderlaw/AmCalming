@@ -98,6 +98,7 @@ const Home: NextPage = () => {
                 })
             }
             newPlayItem.audioEle.src = audioBaseUrl + name + '.mp3'
+            //caution: play() must invoke here,cant put it on other place, or it can't trigger playing in mobile devices
             newPlayItem.audioEle.play()
             setPlayingMusicList(_prev => {
                 return _prev.map(_item => {
