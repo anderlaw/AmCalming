@@ -12,8 +12,15 @@
     user-select: none;
     background-color: #288688;
 }
+.playerContainer > .playButton{
+    cursor: pointer;
+}
 .playerContainer > .intro {
     margin: 0 10px;
     font-size: 16px;
     flex: 1;
+}
+.playerContainer > .arrowUp {
+    padding: 10px;
+    cursor: pointer;
 }

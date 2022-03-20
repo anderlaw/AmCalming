@@ -101,18 +101,24 @@ const Home: NextPage = () => {
     }
     //inner components
     const Player = () => {
-        return <div className={playerStyles.playerContainer}>
-            <div className='play-button'>
+        return <div onClick={()=>setShowPlayInfoDialog(true)} className={playerStyles.playerContainer}>
+            <div className={playerStyles.playButton}>
                 {
                     playStatus ?
-                        <svg onClick={() => switchPlayingStatus(false)} width="34" height="34" viewBox="0 0 34 34"
+                        <svg onClick={(e) => {
+                            e.stopPropagation()
+                            switchPlayingStatus(false)
+                        }} width="34" height="34" viewBox="0 0 34 34"
                              fill="none"
                              xmlns="http://www.w3.org/2000/svg">
                             <circle cx="17" cy="17" r="16.5" stroke="white"/>
                             <rect x="12" y="9" width="3" height="16" fill="white"/>
                             <rect x="19" y="9" width="3" height="16" fill="white"/>
                         </svg> :
-                        <svg onClick={() => switchPlayingStatus(true)} width="34" height="34" viewBox="0 0 34 34"
+                        <svg onClick={(e) => {
+                            e.stopPropagation()
+                            switchPlayingStatus(true)
+                        }} width="34" height="34" viewBox="0 0 34 34"
                              fill="none"
                              xmlns="http://www.w3.org/2000/svg">
                             <circle cx="17" cy="17" r="16.5" stroke="white"/>
@@ -123,10 +129,12 @@ const Home: NextPage = () => {
             <div className={playerStyles.intro}>
                 当前:{playingMusicList.length}个项目
             </div>
-            <svg onClick={() => setShowPlayInfoDialog(true)} width="24" height="13" viewBox="0 0 24 13" fill="none"
-                 xmlns="http://www.w3.org/2000/svg">
-                <path d="M1 12L12 1L23 12" stroke="#C4C4C4"/>
-            </svg>
+            <div className={playerStyles.arrowUp}>
+                <svg width="24" height="13" viewBox="0 0 24 13" fill="none"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 12L12 1L23 12" stroke="#C4C4C4"/>
+                </svg>
+            </div>
         </div>
     }
     return (
