@@ -75,6 +75,7 @@ const Home: NextPage = () => {
                 })
             }
         } else {
+            console.log('新增播放--')
             //新增播放
             const newPlayItem = {
                 audioEle: document.createElement('audio'),
@@ -87,16 +88,18 @@ const Home: NextPage = () => {
                 return _prev.concat(name)
             })
             newPlayItem.audioEle.controls = false
-            newPlayItem.audioEle.src = audioBaseUrl + name + '.mp3'
             newPlayItem.audioEle.loop = true;
             newPlayItem.audioEle.volume = newPlayItem.volume / 100
             newPlayItem.audioEle.oncanplay = () => {
+                console.log('can play')
                 newPlayItem.audioEle.play()
                 //删除`加载中`记录
                 setLoadingList(_prev => {
                     return _prev.filter(_name => _name !== name)
                 })
             }
+
+            newPlayItem.audioEle.src = audioBaseUrl + name + '.mp3'
             newPlayItem.audioEle.onerror = (e) => {
                 console.log('load err')
                 console.log(e)
