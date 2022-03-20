@@ -35,6 +35,7 @@ const Home: NextPage = () => {
     const [curCategory, setCurCategory] = useState<string>('')
     const [showPlayInfoDialog, setShowPlayInfoDialog] = useState<boolean>(false)
     const [playingMusicList, setPlayingMusicList] = useState<PlayingListType>([])
+    const [loadingList, setLoadingList] = useState<Array<string>>([])
     const playStatus = useMemo(() => playingMusicList.filter(item => item.audioPlaying).length > 0, [playingMusicList])
     const switchPlayingStatus = (status: boolean) => {
         setPlayingMusicList(_prev => {
@@ -77,11 +78,21 @@ const Home: NextPage = () => {
         } else {
             //新增播放
             const newAudioEle = document.createElement('audio');
+            //添加`加载中`记录
+            setLoadingList(_prev => {
+                return _prev.concat(name)
+            })
             newAudioEle.controls = false
             newAudioEle.src = audioBaseUrl + name + '.mp3'
             newAudioEle.loop = true;
             newAudioEle.volume = defaultVolumeValue
-            newAudioEle.play()
+            newAudioEle.oncanplay = () => {
+                newAudioEle.play()
+                //删除`加载中`记录
+                setLoadingList(_prev => {
+                    return _prev.filter(_name => _name !== name)
+                })
+            }
             setPlayingMusicList(_prev => {
                 return _prev.map(_item => {
                     const item = Object.assign({}, _item)
@@ -104,7 +115,7 @@ const Home: NextPage = () => {
         return <div onClick={() => setShowPlayInfoDialog(true)} className={playerStyles.playerContainer}>
             <div className={playerStyles.playButton}>
                 {
-                    playStatus ?
+                    loadingList.length > 0 ? <span>---</span>  : playStatus ?
                         <svg onClick={(e) => {
                             e.stopPropagation()
                             switchPlayingStatus(false)
@@ -155,7 +166,7 @@ const Home: NextPage = () => {
                     backgroundColor: 'rgba(21,22,22,0.69)',
                     backdropFilter: 'blur(5px)',
                 }}>
-                <div style={{height:'50px', lineHeight:'50px',padding:"0 20px",textAlign: 'right'}}>
+                <div style={{height: '50px', lineHeight: '50px', padding: "0 20px", textAlign: 'right'}}>
                     <span onClick={
                         () => setShowPlayInfoDialog(false)
                     } style={{
@@ -163,7 +174,7 @@ const Home: NextPage = () => {
                         padding: "6px"
                     }}>X</span>
                 </div>
-                <div style={{height:'calc(100% - 50px)',padding:"0 20px",overflowY:'auto'}}>
+                <div style={{height: 'calc(100% - 50px)', padding: "0 20px", overflowY: 'auto'}}>
                     {
                         playingMusicList.map(item => {
                             return <div key={item.audioName} style={{marginBottom: '10px'}}>
