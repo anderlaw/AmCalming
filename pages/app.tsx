@@ -8,11 +8,15 @@ import playerStyles from "../components/player/index.module.css";
 
 export type PlayingListType = Array<{
     audioEle: HTMLAudioElement,
+    gainNode:GainNode,
     audioPlaying: boolean,
     audioName: string,
     volume: number
 }>
-const defaultVolumeValue = 60
+const maxVolumeValue = 100
+const maxGainValue = 2
+const volumeToGainValue = (curVolumeValue:number) => maxGainValue/maxVolumeValue*curVolumeValue
+const defaultVolumeValue = 50
 const audioBaseUrl = 'https://full-audio-resource-1256270265.cos.ap-shanghai.myqcloud.com/'
 const Home: NextPage = () => {
     const categories = {
@@ -76,31 +80,34 @@ const Home: NextPage = () => {
             }
         } else {
             console.log('新增播放--')
-            //新增播放
+            //新增播
+            const newAudioEle = new Audio(audioBaseUrl + name + '.mp3')
+            newAudioEle.crossOrigin = 'anonymous'
+            newAudioEle.controls = false
+            newAudioEle.loop = true
+
+            const newAudioCtx = new AudioContext();
+            const gainNode = newAudioCtx.createGain();
+
+            newAudioCtx.createMediaElementSource(newAudioEle).connect(gainNode).connect(newAudioCtx.destination)
             const newPlayItem = {
-                audioEle: document.createElement('audio'),
+                audioEle: newAudioEle,
+                gainNode:gainNode,
                 audioPlaying: true,
                 audioName: name,
                 volume: defaultVolumeValue
             }
+            //音量
+            gainNode.gain.value = volumeToGainValue(newPlayItem.volume)
             //添加`加载中`记录
             setLoadingList(_prev => {
                 return _prev.concat(name)
             })
-            newPlayItem.audioEle.controls = false
-            newPlayItem.audioEle.loop = true;
-            newPlayItem.audioEle.volume = newPlayItem.volume / 100
-
             newPlayItem.audioEle.oncanplay = () => {
                 //删除`加载中`记录
                 setLoadingList(_prev => {
                     return _prev.filter(_name => _name !== name)
                 })
-            }
-            if(name === "XIXI"){
-                newPlayItem.audioEle.src = 'https://audio-resource-1256270265.cos.ap-shanghai.myqcloud.com/audio/%E5%B0%8F%E9%B8%A1.mp3'
-            }else{
-                newPlayItem.audioEle.src = audioBaseUrl + name + '.mp3'
             }
             //caution: play() must invoke here,cant put it on other place, or it can't trigger playing in mobile devices
             newPlayItem.audioEle.play()
@@ -186,14 +193,16 @@ const Home: NextPage = () => {
                             return <div key={item.audioName} style={{marginBottom: '10px'}}>
                                 <div style={{fontSize: '15px'}}><span>{item.audioName}</span></div>
                                 <div style={{display: 'flex', alignItems: 'center'}}>
-                                    <input style={{flexGrow: 1}} defaultValue={item.volume} min={0} max={100}
+                                    <input style={{flexGrow: 1}} defaultValue={item.volume} min={0} max={maxVolumeValue}
                                            onChange={e => {
                                                setPlayingMusicList(_prev => {
                                                    return _prev.map(_innerItem => {
+                                                       //改变音量
+
                                                        const innerItem = Object.assign({}, _innerItem)
                                                        if (_innerItem === item) {
                                                            innerItem.volume = (e.target as any).value;
-                                                           innerItem.audioEle.volume = innerItem.volume/100
+                                                           innerItem.gainNode.gain.value = volumeToGainValue(innerItem.volume)
                                                        }
                                                        return innerItem;
                                                    })
