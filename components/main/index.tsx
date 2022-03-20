@@ -9,6 +9,7 @@ interface IProps {
 }
 export const MainContainer:FC<IProps> = (props) => {
     return <div className={mainStyles.mainContainer}>
+        <audio src={'https://full-audio-resource-1256270265.cos.ap-shanghai.myqcloud.com/Birds.mp3'} controls></audio>
         {
             props.musicNameList.map(name => {
                 return <div className={`${mainStyles.musicItemContainer} ${props.curPlaying.find(item => item.audioPlaying && item.audioName === name) ? mainStyles.active:''}`} key={name} onClick={props.onMusicClick.bind(null,name)}>{name}</div>

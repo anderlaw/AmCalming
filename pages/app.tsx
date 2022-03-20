@@ -12,7 +12,7 @@ export type PlayingListType = Array<{
     audioName: string,
     volume: number
 }>
-const defaultVolumeValue = 0.6
+const defaultVolumeValue = 60
 const audioBaseUrl = 'https://full-audio-resource-1256270265.cos.ap-shanghai.myqcloud.com/'
 const Home: NextPage = () => {
     const categories = {
@@ -68,7 +68,6 @@ const Home: NextPage = () => {
                         const item = Object.assign({}, _item)
                         if (!item.audioPlaying) {
                             item.audioPlaying = true;
-                            item.audioEle.volume = item.volume
                             item.audioEle.play()
                         }
                         return item
@@ -77,17 +76,22 @@ const Home: NextPage = () => {
             }
         } else {
             //新增播放
-            const newAudioEle = document.createElement('audio');
+            const newPlayItem = {
+                audioEle: document.createElement('audio'),
+                audioPlaying: true,
+                audioName: name,
+                volume: defaultVolumeValue
+            }
             //添加`加载中`记录
             setLoadingList(_prev => {
                 return _prev.concat(name)
             })
-            newAudioEle.controls = false
-            newAudioEle.src = audioBaseUrl + name + '.mp3'
-            newAudioEle.loop = true;
-            newAudioEle.volume = defaultVolumeValue
-            newAudioEle.oncanplay = () => {
-                newAudioEle.play()
+            newPlayItem.audioEle.controls = false
+            newPlayItem.audioEle.src = audioBaseUrl + name + '.mp3'
+            newPlayItem.audioEle.loop = true;
+            newPlayItem.audioEle.volume = newPlayItem.volume / 100
+            newPlayItem.audioEle.oncanplay = () => {
+                newPlayItem.audioEle.play()
                 //删除`加载中`记录
                 setLoadingList(_prev => {
                     return _prev.filter(_name => _name !== name)
@@ -101,12 +105,7 @@ const Home: NextPage = () => {
                         item.audioEle.play()
                     }
                     return item
-                }).concat([{
-                    audioEle: newAudioEle,
-                    audioPlaying: true,
-                    audioName: name,
-                    volume: newAudioEle.volume
-                }])
+                }).concat([newPlayItem])
             })
         }
     }
@@ -180,14 +179,14 @@ const Home: NextPage = () => {
                             return <div key={item.audioName} style={{marginBottom: '10px'}}>
                                 <div style={{fontSize: '15px'}}><span>{item.audioName}</span></div>
                                 <div style={{display: 'flex', alignItems: 'center'}}>
-                                    <input style={{flexGrow: 1}} defaultValue={item.volume * 10} min={0} max={10}
+                                    <input style={{flexGrow: 1}} defaultValue={item.volume} min={0} max={100}
                                            onChange={e => {
                                                setPlayingMusicList(_prev => {
                                                    return _prev.map(_innerItem => {
                                                        const innerItem = Object.assign({}, _innerItem)
                                                        if (_innerItem === item) {
-                                                           innerItem.volume = (e.target as any).value / 10;
-                                                           innerItem.audioEle.volume = innerItem.volume
+                                                           innerItem.volume = (e.target as any).value;
+                                                           innerItem.audioEle.volume = innerItem.volume/100
                                                        }
                                                        return innerItem;
                                                    })
