@@ -190,10 +190,20 @@ const Home: NextPage = () => {
                                            onChange={e => {
                                                setPlayingMusicList(_prev => {
                                                    return _prev.map(_innerItem => {
+                                                       //改变音量
+                                                       const audioCtx = new AudioContext();
+                                                       const track = audioCtx.createMediaElementSource(_innerItem.audioEle);
+                                                       track.connect(audioCtx.destination);
+
+                                                       const gainNode = audioCtx.createGain();
+                                                       track.connect(gainNode).connect(audioCtx.destination);
+
+
                                                        const innerItem = Object.assign({}, _innerItem)
                                                        if (_innerItem === item) {
                                                            innerItem.volume = (e.target as any).value;
                                                            innerItem.audioEle.volume = innerItem.volume/100
+                                                           gainNode.gain.value = Math.floor(innerItem.volume/100 * Math.random()*2);
                                                        }
                                                        return innerItem;
                                                    })
