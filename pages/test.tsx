@@ -7,7 +7,7 @@ export default () => {
         newAudioEle.controls = false
         newAudioEle.loop = true
         newAudioEle.src = '/Afternoon.mp3'
-        newAudioEle.volume = 0.4
+        newAudioEle.volume = 1
         // const newAudioCtx = new AudioContext();
         // const gainNode = newAudioCtx.createGain();
 
