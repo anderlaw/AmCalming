@@ -24,6 +24,8 @@ export default () => {
             console.log('当前播放位置：',newAudioEle.currentTime)
             console.log('是否结束播放：',newAudioEle.ended)
             console.log('是否暂停播放：',newAudioEle.paused)
+            console.log('所属context：',newAudioCtx)
+            console.log('音轨声音：',gainNode.gain.value)
         },3000)
     }}>
         play
