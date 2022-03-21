@@ -11,9 +11,13 @@ export default () => {
         const newAudioCtx = new AudioContext();
         const gainNode = newAudioCtx.createGain();
 
-        // newAudioCtx.createMediaElementSource(newAudioEle).connect(gainNode).connect(newAudioCtx.destination)
+        const finish = newAudioCtx.destination;
+        newAudioCtx.createMediaElementSource(newAudioEle).connect(gainNode)
+        gainNode.connect(newAudioCtx.destination)
         //音量
-        // gainNode.gain.value = 1
+        gainNode.gain.value = 2
+        //insert into body
+        document.body.appendChild(newAudioEle)
         newAudioEle.play()
         setPlayContext({
             context:newAudioCtx,

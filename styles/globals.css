@@ -17,3 +17,8 @@ body, p {
 .app-bg{
     /*background-color: #FEFFFE;*/
 }
+audio{
+    position: fixed;
+    z-index: -1;
+    visibility: hidden;
+}
