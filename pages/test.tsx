@@ -11,7 +11,7 @@ export default () => {
         const newAudioCtx = new AudioContext();
         const gainNode = newAudioCtx.createGain();
 
-        newAudioCtx.createMediaElementSource(newAudioEle).connect(gainNode).connect(newAudioCtx.destination)
+        // newAudioCtx.createMediaElementSource(newAudioEle).connect(gainNode).connect(newAudioCtx.destination)
         //音量
         // gainNode.gain.value = 1
         newAudioEle.play()
