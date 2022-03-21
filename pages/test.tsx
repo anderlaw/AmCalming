@@ -1,6 +1,7 @@
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 
 export default () => {
+    const [playContext,setPlayContext] = useState<any>()
     return <button style={{ margin:'30px' }} onClick={() => {
         const newAudioEle: HTMLAudioElement = document.createElement('audio');
         newAudioEle.controls = false
@@ -11,10 +12,14 @@ export default () => {
         const gainNode = newAudioCtx.createGain();
 
         newAudioCtx.createMediaElementSource(newAudioEle).connect(gainNode).connect(newAudioCtx.destination)
-
         //音量
         gainNode.gain.value = 1
         newAudioEle.play()
+        setPlayContext({
+            context:newAudioCtx,
+            gainNode:gainNode,
+            audioEle:newAudioEle
+        })
     }}>
         play
     </button>
