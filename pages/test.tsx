@@ -13,7 +13,7 @@ export default () => {
 
         newAudioCtx.createMediaElementSource(newAudioEle).connect(gainNode).connect(newAudioCtx.destination)
         //音量
-        gainNode.gain.value = 1
+        // gainNode.gain.value = 1
         newAudioEle.play()
         setPlayContext({
             context:newAudioCtx,
