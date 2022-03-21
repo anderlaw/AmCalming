@@ -8,15 +8,21 @@ import playerStyles from "../components/player/index.module.css";
 
 export type PlayingListType = Array<{
     audioEle: HTMLAudioElement,
-    gainNode:GainNode,
     audioPlaying: boolean,
     audioName: string,
     volume: number
 }>
-const maxVolumeValue = 100
-const maxGainValue = 2
-const volumeToGainValue = (curVolumeValue:number) => maxGainValue/maxVolumeValue*curVolumeValue
-const defaultVolumeValue = 50
+const isMobileDevice = (): boolean => {
+    const targetStrArr = ['iPad', 'Android', 'iPhone', 'Mobile']
+    const UA = navigator.userAgent
+    return Boolean(targetStrArr.find(targetItem => UA.indexOf(targetItem) > -1))
+}
+const maxDisplayVolume = 100
+const defaultDisplayVolume = 50
+const maxRealVolume = 1
+
+const toRealVolumeValue = (displayVolume: number) => maxRealVolume / maxDisplayVolume * displayVolume
+
 const audioBaseUrl = 'https://full-audio-resource-1256270265.cos.ap-shanghai.myqcloud.com/'
 const Home: NextPage = () => {
     const categories = {
@@ -81,24 +87,18 @@ const Home: NextPage = () => {
         } else {
             console.log('新增播放--')
             //新增播
-            const newAudioEle = new Audio(audioBaseUrl + name + '.mp3')
-            newAudioEle.crossOrigin = 'anonymous'
-            newAudioEle.controls = false
-            newAudioEle.loop = true
-
-            const newAudioCtx = new AudioContext();
-            const gainNode = newAudioCtx.createGain();
-
-            newAudioCtx.createMediaElementSource(newAudioEle).connect(gainNode).connect(newAudioCtx.destination)
             const newPlayItem = {
-                audioEle: newAudioEle,
-                gainNode:gainNode,
+                audioEle:document.createElement('audio'),
                 audioPlaying: true,
                 audioName: name,
-                volume: defaultVolumeValue
+                volume: defaultDisplayVolume
             }
+            //音频初始化
+            newPlayItem.audioEle.src = audioBaseUrl + name + '.mp3'
+            newPlayItem.audioEle.controls = false
+            newPlayItem.audioEle.loop = true
+            newPlayItem.audioEle.volume = toRealVolumeValue(newPlayItem.volume)
             //音量
-            gainNode.gain.value = volumeToGainValue(newPlayItem.volume)
             //添加`加载中`记录
             setLoadingList(_prev => {
                 return _prev.concat(name)
@@ -128,7 +128,7 @@ const Home: NextPage = () => {
         return <div onClick={() => setShowPlayInfoDialog(true)} className={playerStyles.playerContainer}>
             <div className={playerStyles.playButton}>
                 {
-                    loadingList.length > 0 ? <span>---</span>  : playStatus ?
+                    loadingList.length > 0 ? <span>---</span> : playStatus ?
                         <svg onClick={(e) => {
                             e.stopPropagation()
                             switchPlayingStatus(false)
@@ -191,24 +191,9 @@ const Home: NextPage = () => {
                     {
                         playingMusicList.map(item => {
                             return <div key={item.audioName} style={{marginBottom: '10px'}}>
-                                <div style={{fontSize: '15px'}}><span>{item.audioName}</span></div>
-                                <div style={{display: 'flex', alignItems: 'center'}}>
-                                    <input style={{flexGrow: 1}} defaultValue={item.volume} min={0} max={maxVolumeValue}
-                                           onChange={e => {
-                                               setPlayingMusicList(_prev => {
-                                                   return _prev.map(_innerItem => {
-                                                       //改变音量
-
-                                                       const innerItem = Object.assign({}, _innerItem)
-                                                       if (_innerItem === item) {
-                                                           innerItem.volume = (e.target as any).value;
-                                                           innerItem.gainNode.gain.value = volumeToGainValue(innerItem.volume)
-                                                       }
-                                                       return innerItem;
-                                                   })
-                                               })
-                                           }} type={'range'}/>
-                                    <div onClick={() => {
+                                <div style={{fontSize: '15px', lineHeight: 1.6}}>
+                                    <span>{item.audioName}</span>
+                                    <span onClick={() => {
                                         setPlayingMusicList(_prev => {
                                             return _prev.filter(_innerItem => {
                                                 const innerItem = Object.assign({}, _innerItem)
@@ -220,8 +205,28 @@ const Home: NextPage = () => {
                                             })
                                         })
                                     }} style={{marginLeft: '10px', padding: '6px'}}>X
-                                    </div>
+                                    </span>
                                 </div>
+                                {
+                                    !isMobileDevice() && <div>
+                                        <input style={{width:'100%'}} defaultValue={item.volume} min={0} max={maxDisplayVolume}
+                                               onChange={e => {
+                                                   setPlayingMusicList(_prev => {
+                                                       return _prev.map(_innerItem => {
+                                                           //改变音量
+                                                           const innerItem = Object.assign({}, _innerItem)
+                                                           if (_innerItem === item) {
+                                                               innerItem.volume = (e.target as any).value;
+                                                               innerItem.audioEle.volume = toRealVolumeValue(innerItem.volume)
+                                                           }
+                                                           return innerItem;
+                                                       })
+                                                   })
+                                               }} type={'range'}/>
+
+                                    </div>
+                                }
+
                             </div>
                         })
                     }
