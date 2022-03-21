@@ -20,6 +20,11 @@ export default () => {
             gainNode:gainNode,
             audioEle:newAudioEle
         })
+        setInterval(()=>{
+            console.log('当前播放位置：',newAudioEle.currentTime)
+            console.log('是否结束播放：',newAudioEle.ended)
+            console.log('是否暂停播放：',newAudioEle.paused)
+        },3000)
     }}>
         play
     </button>
