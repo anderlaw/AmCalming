@@ -1,7 +1,7 @@
 import {useEffect} from "react";
 
 export default () => {
-    return <button onClick={() => {
+    return <button style={{ margin:'30px' }} onClick={() => {
         const newAudioEle: HTMLAudioElement = document.createElement('audio');
         newAudioEle.controls = false
         newAudioEle.loop = true
