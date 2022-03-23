@@ -1,10 +1,10 @@
 import headerStyles from "./header.module.css";
 import {FC} from "react";
 
-export type TabType = 'Library' | 'Config'
+export type TabType = string
 const Tabs: Array<TabType> = [
-    'Library',
-    'Config'
+    '资源库',
+    '配置'
 ]
 
 interface IProps {
