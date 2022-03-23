@@ -10,9 +10,10 @@
 .leftMenuContainer > .menuItem{
     padding: 8px 0px;
     text-align: center;
+    transition: background-color .3s ease-out;
 }
 .leftMenuContainer > .menuItem:hover{
-    background-color: #ccc;
+    background-color: #ebebeb;
     cursor: pointer;
 }
 .leftMenuContainer > .text{
